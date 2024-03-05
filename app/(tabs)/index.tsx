@@ -1,14 +1,38 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
+import { Tabs } from "expo-router";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import ExploreHeader from "@/components/ExploreHeader";
+import useExploreScreen from "@/hooks/useExploreScreen";
+import HousesMap from "@/components/HousesMap";
+import HousesBottomSheet from "@/components/HousesBottomSheet";
+import { View } from "@/components/Themed";
+import { type House } from "@/types/house";
+import { type HouseGeo } from "@/types/house-geo.type";
 
-export default function TabOneScreen() {
+import data from "../../assets/data/airbnb-listings-min.json";
+import geoData from "../../assets/data/airbnb-listings-geo-min.json";
+
+export default function ExploreScreen() {
+  const { currentCategory, onCategoryChange } = useExploreScreen();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <Tabs.Screen
+        options={{
+          header: () => (
+            <ExploreHeader
+              currentCategory={currentCategory}
+              setCurrentCategory={onCategoryChange}
+            />
+          ),
+        }}
+      />
+
+      <HousesMap data={geoData as unknown as HouseGeo} />
+      <HousesBottomSheet
+        data={data as unknown as House[]}
+        currentCategory={currentCategory}
+      />
     </View>
   );
 }
@@ -16,16 +40,5 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
   },
 });
